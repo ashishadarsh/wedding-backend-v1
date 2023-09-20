@@ -1,0 +1,37 @@
+type Query {
+    budgets: [Budget!],
+    guests: [Guest!],
+    budget(_id: ID!): Budget
+}
+
+type Mutation {
+    saveBudget(input: BudgetInput!): Budget
+}
+
+type Budget {
+    _id: ID!,
+    expenseType: String,
+    expense: String,
+    estimatedPrice: String,
+    assignedTo: String,
+    lastUpdatedDate: String! 
+}
+
+type Guest {
+    _id: ID!,
+    name: String!,
+    inviteMedium: String,
+    inviteSent: String,
+    email: String,
+    address: String,
+    # budget: Budget!
+    attendee: String
+}
+
+input BudgetInput {
+    _id: ID,
+    expenseType: String,
+    expense: String,
+    estimatedPrice: String,
+    assignedTo: String,
+}
