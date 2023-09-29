@@ -251,6 +251,12 @@ async function saveUserInDB({ email, password }) {
     const db = client.db(dbName);
     const collection = db.collection(collectionName3);
 
+    // Check if the email is already in the database
+    const existingUser = await collection.findOne({ email: email });
+    if (existingUser) {
+      throw new Error('This email is already registered');
+    }
+
     // Define the data to be saved
     const userData = {
       email: email,
@@ -258,31 +264,18 @@ async function saveUserInDB({ email, password }) {
       registeredDate: new Date(),
     };
 
-      const result = await collection.insertOne(userData);
-      const user = await collection.findOne({ email:email });
-      return user;
-    
-
-    // Use findOneAndUpdate to insert or update the document
-    // const options = {
-    //   upsert: true,
-    //   returnOriginal: false, // Ensure that the updated document is returned
-    // };
-
-    // Perform the update and explicitly return the updated document
-    // const updatedDocument = await collection.findOneAndUpdate(query, { $set: userData }, options);
-
-    // console.log('Budget updated or inserted successfully');
-    // console.log("Updated Document:", updatedDocument);
-    
-    // return updatedDocument;
+    // Insert the new user into the collection
+    const result = await collection.insertOne(userData);
+    const user = await collection.findOne({ email: email });
+    return user;
   } catch (error) {
-    console.error('Error saving user:', error);
+    throw error; // Rethrow the error to handle it elsewhere if needed
   } finally {
     // Close the MongoDB client when done
     client.close();
   }
 }
+
 
 // // Call the saveExpense function to save data
 export { saveUserInDB };

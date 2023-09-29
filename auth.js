@@ -40,17 +40,17 @@ export async function handleLogin(req, res) {
 }
 
 export async function handleSignUp(req, res, next) {
-  if (res.statusCode === 200) {
+  try {
     const { email, password } = req.body;
-    const result = await saveUserInDB({email, password });
+    const result = await saveUserInDB({ email, password });
+
     if (result) {
       const { email, _id } = result;
       const claims = { sub: result._id, email: result.email };
       const idToken = jwt.sign(claims, secret);
       res.status(201).json({ email, _id, idToken });
     }
-  } else {
-    // Handle the case where authentication fails or the status code is not 200
-    // You can choose to return an error response or perform other actions here.
+  } catch (error) {
+    res.status(500).json({ error: error.message }); // Respond with an error status and message
   }
 }
