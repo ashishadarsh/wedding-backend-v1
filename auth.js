@@ -1,4 +1,3 @@
-import { expressjwt } from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import { getUserByEmail, saveUserInDB } from './mongodb.js';
 
@@ -33,9 +32,10 @@ export async function handleLogin(req, res) {
   if (!user || user.password !== password) {
     res.sendStatus(401);
   } else {
-    const claims = { sub: user.id, email: user.email };
-    const token = jwt.sign(claims, secret);
-    res.json({ token });
+    const { email, _id } = user;
+    const claims = { sub: user._id, email: user.email };
+    const idToken = jwt.sign(claims, secret);
+    res.status(201).json({ email, _id, idToken });
   }
 }
 
