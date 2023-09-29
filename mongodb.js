@@ -4,6 +4,7 @@ const uri = 'mongodb://127.0.0.1:27017'; // Replace with your MongoDB URI
 const dbName = 'Wedding-planar'; // Replace with your database name
 const collectionName1 = 'budget';
 const collectionName2 = 'guest'; // Replace with your collection name
+const collectionName3 = 'user';
 
 // async function insertDocument() {
 //   const client = new MongoClient(uri, {
@@ -237,3 +238,72 @@ async function fetchGuests() {
 
 // // Call the saveExpense function to save data
 export { saveBudget };
+
+async function saveUserInDB({ email, password }) {
+  const client = new MongoClient(uri);
+
+  try {
+    // Connect to the MongoDB server
+    await client.connect();
+    console.log('Connected to MongoDB');
+
+    // Specify the database and collection
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName3);
+
+    // Define the data to be saved
+    const userData = {
+      email: email,
+      password: password,
+      registeredDate: new Date(),
+    };
+
+      const result = await collection.insertOne(userData);
+      const user = await collection.findOne({ email:email });
+      return user;
+    
+
+    // Use findOneAndUpdate to insert or update the document
+    // const options = {
+    //   upsert: true,
+    //   returnOriginal: false, // Ensure that the updated document is returned
+    // };
+
+    // Perform the update and explicitly return the updated document
+    // const updatedDocument = await collection.findOneAndUpdate(query, { $set: userData }, options);
+
+    // console.log('Budget updated or inserted successfully');
+    // console.log("Updated Document:", updatedDocument);
+    
+    // return updatedDocument;
+  } catch (error) {
+    console.error('Error saving user:', error);
+  } finally {
+    // Close the MongoDB client when done
+    client.close();
+  }
+}
+
+// // Call the saveExpense function to save data
+export { saveUserInDB };
+
+
+async function getUserByEmail(email) {
+  const client = new MongoClient(uri);
+
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName3);
+
+    // Use find() to retrieve data from the collection
+    const user = await collection.findOne({ email:email });
+    
+    return user;
+  } finally {
+    await client.close();
+  }
+}
+
+export { getUserByEmail };
+

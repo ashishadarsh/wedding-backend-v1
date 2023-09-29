@@ -37,8 +37,12 @@ export const resolvers = {
     },
 
     Mutation: {
-        saveBudget: async (_root, {input: {_id, expenseType, expense, estimatedPrice, assignedTo} }) => {
+        saveBudget: async (_root, {input: {_id, expenseType, expense, estimatedPrice, assignedTo} }, {auth}) => {
             const id = _id;
+            console.log({auth});
+            if (!auth) {
+                throw unAuthorizedError('Missing Authentication');
+            }
             try {
               const result = await saveBudget({ id, expenseType, expense, estimatedPrice, assignedTo });
               console.log({result});
@@ -75,5 +79,11 @@ function getLastUpdatedDate(ToformatDate) {
 function notFoundError(message) {
     throw new GraphQLError(message, {
         extensions: {code: 'Not_Found'},
+    })
+}
+
+function unAuthorizedError(message) {
+    throw new GraphQLError(message, {
+        extensions: {code: 'UNAUTHORIZED'},
     })
 }
