@@ -10,7 +10,7 @@ const PORT = 9000;
 const app = express();
 
 app.use(cors());
-app.use(express.json()); // Parse JSON request bodies
+app.use(express.json(),authMiddleware); // Parse JSON request bodies
 
 app.post('/login', authMiddleware, handleLogin);
 app.post('/signup', handleSignUp);
@@ -18,10 +18,11 @@ app.post('/signup', handleSignUp);
 const typeDefs = await readFile('./schema.graphql', 'utf8');
 
 function getContext({ req }) {
-    return { auth: req.auth };
+        return { auth: req.auth };
 }
 
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
+
 
 await apolloServer.start();
 app.use('/graphql', apolloMiddleware(apolloServer, { context: getContext }));

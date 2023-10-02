@@ -1,29 +1,37 @@
+import {expressjwt} from 'express-jwt'
 import jwt from 'jsonwebtoken';
 import { getUserByEmail, saveUserInDB } from './mongodb.js';
 
 const secret = Buffer.from('Zn8Q5tyZ/G1MHltc4F/gTkVJMlrbKiZt', 'base64');
 
-export async function authMiddleware(req, res, next) {
-  const authorizationHeader = req.headers['authorization'];
-  let token; // Define token variable here
+export const authMiddleware = expressjwt({
+  algorithms: ['HS256'],
+  credentialsRequired: false,
+  secret,
+});
 
-  // If the Authorization header is present and contains a token
-  if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
-    // Extract the token (assuming it's in the "Bearer" format)
-    token = authorizationHeader.slice(7); // Removes "Bearer " prefix
-  } else {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
+// export async function authMiddleware(req, res, next) {
+//   const authorizationHeader = req.headers['authorization'];
+//   let token; // Define token variable here
+// console.log("1111111111111");
+//   // If the Authorization header is present and contains a token
+//   if (authorizationHeader && authorizationHeader.startsWith('Bearer ')) {
+//     // Extract the token (assuming it's in the "Bearer" format)
+//     token = authorizationHeader.slice(7); // Removes "Bearer " prefix
+//   } else {
+//     return res.status(401).json({ message: 'Unauthorized' });
+//   }
 
-  try {
-    const decoded = jwt.verify(token, secret);
-    req.auth = decoded;
-    next(); // Proceed to the next middleware
-  } catch (error) {
-    console.error('JWT Verification Error:', error); // Log the error for debugging
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-}
+//   try {
+//     const decoded = jwt.verify(token, secret);
+//     req.auth = decoded;
+//     console.log("from middleware",req.auth);
+//     next(); // Proceed to the next middleware
+//   } catch (error) {
+//     console.error('JWT Verification Error:', error); // Log the error for debugging
+//     return res.status(401).json({ message: 'Unauthorized' });
+//   }
+// }
 
 
 export async function handleLogin(req, res) {

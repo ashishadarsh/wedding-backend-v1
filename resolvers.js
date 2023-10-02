@@ -1,18 +1,19 @@
-import { fetchBudgetById, fetchBudgets, fetchGuests, saveBudget } from './mongodb.js';
+import { countBudgets, fetchBudgetById, fetchBudgets, fetchGuests, saveBudget } from './mongodb.js';
 import { GraphQLError } from 'graphql';
 
 export const resolvers = {
 
     // all the queries
     Query: {
-        budgets: async () => {
+        budgets: async (_root, {limit, offset}) => {
             try {
                 // Call the fetchBudgets function to get data from the database
-                const budgets = await fetchBudgets();
-                if (!budgets) {
+                const items = await fetchBudgets(limit, offset);
+                const totalCount = await countBudgets();
+                if (!items) {
                     throw new GraphQLError('No budget found')
                 }
-                return budgets;
+                return {items, totalCount};
               } catch (error) {
                 console.error('Error fetching budgets:', error);
                 throw error; // You can handle the error as needed
@@ -40,9 +41,9 @@ export const resolvers = {
         saveBudget: async (_root, {input: {_id, expenseType, expense, estimatedPrice, assignedTo} }, {auth}) => {
             const id = _id;
             console.log({auth});
-            if (!auth) {
-                throw unAuthorizedError('Missing Authentication');
-            }
+            // if (!auth) {
+            //     throw unAuthorizedError('Missing Authentication');
+            // }
             try {
               const result = await saveBudget({ id, expenseType, expense, estimatedPrice, assignedTo });
               console.log({result});

@@ -115,8 +115,27 @@ const collectionName3 = 'user';
 //   }
 
 //   insertManyDocument().catch(console.error);
+async function countBudgets() {
+  const client = new MongoClient(uri);
+  
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const collection = db.collection(collectionName1);
+  
+      const totalCount =  await collection.countDocuments();
+      // Use find() to retrieve data from the collection
+      //const budgets = (await collection.find().sort({lastUpdatedDate:'-1'}).skip(offset).limit(limit).toArray());
+      console.log({totalCount});
+      return await totalCount;
+    } finally {
+      await client.close();
+    }
+}
 
-async function fetchBudgets() {
+export {countBudgets};
+
+async function fetchBudgets(limit, offset) {
     const client = new MongoClient(uri);
   
     try {
@@ -125,9 +144,8 @@ async function fetchBudgets() {
       const collection = db.collection(collectionName1);
   
       // Use find() to retrieve data from the collection
-      const budgets = await collection.find().toArray();
-      
-      return budgets;
+      const budgets = (await collection.find().sort({lastUpdatedDate:'-1'}).skip(offset).limit(limit).toArray());
+      return await budgets;
     } finally {
       await client.close();
     }

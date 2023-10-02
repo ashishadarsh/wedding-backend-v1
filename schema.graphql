@@ -1,5 +1,5 @@
 type Query {
-    budgets: [Budget!],
+    budgets(limit: Int, offset: Int): BudgetSubList,
     guests: [Guest!],
     budget(_id: ID!): Budget
 }
@@ -15,6 +15,11 @@ type Budget {
     estimatedPrice: String,
     assignedTo: String,
     lastUpdatedDate: String! 
+}
+
+type BudgetSubList {
+    items: [Budget!]!,
+    totalCount: Int!
 }
 
 type Guest {
