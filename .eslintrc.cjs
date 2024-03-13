@@ -55,7 +55,7 @@ module.exports = {
         // 'linebreak-style': ['error', 'unix'], // Use UNIX line endings
         // 'quotes': ['error', 'single'], // Use single quotes
         // 'semi': ['error', 'always'], // Require semicolons at the end of statements
-        // 'no-console': 'warn', // Warn on the use of console.log, etc.
+        'no-console': 'warn', // Warn on the use of console.log, etc.
         'no-unused-vars': 'off', // Disable unused variable warnings (handled by TypeScript)
         '@typescript-eslint/no-unused-vars': ['error'], // Enable TypeScript-specific unused variable checks
            
