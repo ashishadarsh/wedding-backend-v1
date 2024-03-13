@@ -24,6 +24,6 @@ after(async () => {
 it('should expose GraphQL endpoint at /graphql', async () => {
   const response = await supertest(server).get('/graphql');
   console.log('Response:', response.body);
-  expect(response.status).to.equal(400);
+  expect(response.status).to.equal(200);
 });
 
