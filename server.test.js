@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import supertest from 'supertest';
 import { before, after, it } from 'mocha';
 
-const PORT = 9000;
-const BASE_URL = `http://localhost:${PORT}`;
+// const PORT = 9000;
+// const BASE_URL = `http://localhost:${PORT}`;
 
 import { server, apolloServer, init } from './server.js';
 
